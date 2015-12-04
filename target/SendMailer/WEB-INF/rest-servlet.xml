@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+	    http://www.springframework.org/schema/aop 
+	    http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.0.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+	<context:component-scan base-package="com" />
+	<mvc:annotation-driven />
+	<aop:aspectj-autoproxy />
+	
+	    <bean id="liveDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+    		<property name="jndiName" value="java:jboss/datasources/MySQLDS" />
+		</bean>
+		
+		  
+    <bean id="datasource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://localhost:3306/Iq" />
+        <property name="username" value="root" />
+        <property name="password" value="123456" />
+    </bean>
+    
+    <bean id="jdbctemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="datasource" />
+    </bean>
+    	
+    	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.gmail.com" />
+		<property name="port" value="587" />
+		<property name="username" value="mahee.routh@gmail.com" />
+		<property name="password" value="9494927882" />
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.transport.protocol">smtp</prop>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+			</props>
+		</property>
+	</bean>
+	
+    	
+    	<bean id="mySessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        	<property name="dataSource" ref="liveDataSource"/>
+        	<property name="mappingResources">
+            	<list>
+                	<value>UserDetails.hbm.xml</value>
+                	<value>VerificationToken.hbm.xml</value>
+            	</list>
+        	</property>
+        	<property name="hibernateProperties" ref="exampleHibernateProperties"/>
+    	</bean>
+		
+		<bean id="exampleHibernateProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="properties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <!--<prop key="hibernate.query.factory_class">org.hibernate.hql.classic.ClassicQueryTranslatorFactory</prop>-->
+                <prop key="hibernate.dbcp.maxActive">100</prop>
+                <prop key="hibernate.dbcp.whenExhaustedAction">1</prop>
+                <prop key="hibernate.dbcp.maxWait">120000</prop>
+                <prop key="hibernate.dbcp.maxIdle">10</prop>
+                <prop key="hibernate.dbcp.ps.maxActive">100</prop>
+                <prop key="hibernate.dbcp.ps.whenExhaustedAction">1</prop>
+                <prop key="hibernate.dbcp.ps.maxWait">120000</prop>
+                <prop key="hibernate.dbcp.ps.maxIdle">100</prop>
+                <prop key="hibernate.bytecode.use_reflection_optimizer">false</prop>
+                <prop key="hibernate.use_lazy_proxy_factory">true</prop>
+                <prop key="hibernate.unsaved-value">false</prop>
+                <prop key="hibernate.connection.autocommit">false</prop>
+            </props>
+        </property>
+    </bean>
+     
+     <bean id="jaxb2Marshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+		<property name="packagesToScan">
+			<list>
+            	<value>org.ota.v2006a</value>
+            	<value>kunin.protocolframework.runtime</value>
+            	<value>kunin.protocolframework.runtime.xerces</value>
+        	</list>
+        </property>
+    </bean>
+	
+	<bean id="jaxb2MarshallerUtility" class="com.cultuzz.utilities.Jaxb2MarshallerUtility">
+	<property name="marshaller" ref="jaxb2Marshaller"/>
+	<property name="unmarshaller" ref="jaxb2Marshaller"/>
+	</bean>
+     
+    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="mySessionFactory"/>
+    </bean>
+ 
+		
+  </beans>

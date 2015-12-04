@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 14 Nov, 2015 3:14:37 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.userAdmin.dao.model.UserAdministration.UserDetails" table="User_Details" catalog="UserAdministration" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="userName" type="java.lang.String">
+            <column name="userName" />
+        </property>
+        <property name="password" type="java.lang.String">
+            <column name="password" />
+        </property>
+        <property name="emailId" type="java.lang.String">
+            <column name="emailId" />
+        </property>
+        <property name="verified" type="java.lang.Byte">
+            <column name="verified" />
+        </property>
+        <set name="verificationTokens" table="Verification_Token" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="user_id" />
+            </key>
+            <one-to-many class="com.userAdmin.dao.model.UserAdministration.VerificationToken" />
+        </set>
+    </class>
+</hibernate-mapping>
