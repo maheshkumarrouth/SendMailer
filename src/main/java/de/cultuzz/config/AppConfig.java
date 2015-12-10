@@ -15,6 +15,6 @@ public class AppConfig {
     public RefreshCallService bean() {
         return new RefreshCallService();
     }
-	
+// test comment for git test	
 	
 }
